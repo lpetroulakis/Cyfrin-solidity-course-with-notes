@@ -10,5 +10,5 @@ contract fallbackexample{
         fallback () external payable {// this works even when sending data
             result = 2;
         }
-
+ 
 }
