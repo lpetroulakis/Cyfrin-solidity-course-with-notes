@@ -1,0 +1,80 @@
+// in this contract we want to 1) get funds from users 2)withdraw funds 3)set a minimum value in usd
+
+//SPDX-License-Identifier: MIT
+pragma solidity 0.8.18;
+
+import {PriceConverter} from "./PriceConverter.sol";
+
+contract fundme{
+        using PriceConverter for uint256; // we are attachin the priceconverter library to all uint256s
+   
+        uint256 public constant MINIMUM_USD = 5 * 10 ** 18; // or 5e18 or 5*1e18. the constant keyword saves us gas and makes it easier for the machine to read. it is followed mainly by caps
+
+        address [] public funders;
+        mapping (address funder  => uint256 AmountFunded) public AddressToAmountFunded; 
+
+    address public immutable i_owner; // immutables are like constants, but they are called upon within functions, i_*** means immutable
+
+    constructor () {
+            i_owner = msg.sender;
+    }
+
+    error notOwner();
+
+    function fund() public payable {  //we want this one to allow users to send money and also have a minimum amount in usd. but how do we send ETH? 1st, we make this transaction payable.
+           
+           require (msg.value.getConversionRate() >= MINIMUM_USD, "not enough ETH") ; // 1e18 = 1 ETH = 10**18 (amount of wei in 1 eth)
+           funders.push(msg.sender);   //the address array is named funders, and msg.sender is always an address, we essentially push the addresses into the array  // a "revert" undoes any actions that have been done and sends back all gas spent
+           AddressToAmountFunded[msg.sender] =  AddressToAmountFunded[msg.sender] + msg.value; // this whole line can also be written as 'AddressToAmountFunded[msg.sender] += msg.value'
+    }
+        
+    function withdraw()  public onlyOwner {
+                // require (msg.sender == owner, "Must be owner!"); // == means equal, = means set // this requires the owner to execute, when we have no modifier in place
+                // we're gonna use a "for" loop
+                // [1,2,3,4] elements
+                // [0,1,2,3] indexes
+                // a for loops goes as: (/* starting index, ending index,step amount/pace */) "/*" is how you comment in lines of code
+                // let's begin the "for" loop
+                for(uint256 funderIndex = 0; funderIndex < funders.length; funderIndex++ ){ // ++  instead of 'funderindex = funderindex +1', 'funderIndex<funders.length' is bool, when it stops being true, it ends. funders is the name of the address array above
+                address funder = funders[funderIndex];
+                AddressToAmountFunded[funder] = 0;
+                } 
+                funders = new address[](0); // this is how we reset the array
+
+                //we withdraw with 3 dif methods - transfer, send, call
+                // transfer 
+                // payable(msg.sender).transfer(address(this).balance);  // msg.sender is an address type while payable(msg.sender) is a payable address type
+
+                // //send
+                // bool SendSuccess = payable(msg.sender).send(address(this).balance); //send sends a boolean if it fails so we have to require a success or message.
+                // require (SendSuccess, "Send Failed"); 
+
+                //call  - lower level command, you can call any function without any ABI
+                (bool CallSuccess,) = payable(msg.sender).call{value: address(this).balance}(""); // 1.we call no function that's why we leave "" empty. 2. this call returns two variables so we put them in () in the beginning. since we care only for the first one, we can leave the second one empty.
+                require (CallSuccess, "Call Failed"); // we have to require a return, if call success fails, then we get the message call failed
+    }
+            
+    modifier onlyOwner() {
+        // require(msg.sender == i_owner, "must be owner!"); // we create a modifier and go apply the keyword onlyOwner to all the functions that we want to be owner only
+        //_; //the underscore means that whatever follows in the function will be executed if requirement is success
+        //another way to have the require is
+        if (msg.sender != i_owner) {revert notOwner(); } // != means =/=
+        _;
+        }
+
+        receive() external payable {
+            fund();
+        }
+        fallback() external payable {
+            fund();
+        }
+
+
+
+    }
+    
+
+
+
+
+
