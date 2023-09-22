@@ -1,0 +1,27 @@
+// SPDX-License-Identifier: MIT
+
+pragma solidity ^0.8.18;
+
+//import "./simplestorage1.sol"; // the command 'import' imports the contract between the ""S , but this is the simplest command and you should not default ot this, the best one follows
+import {SimpleStorage} from "./simplestorage1.sol";
+
+contract StorageFactory {
+    // uint256 public FavoriteNumber
+    // type visibility name
+    SimpleStorage[] public listofsimpleStoragecontracts; //simplestorage was a contract before, we created an array now of them, giving it the name listofsimplestoragecontracts
+
+function CreateSimpleStorageContract() public {    //we created a function with the name createsimplestoragecontract and made it public
+    SimpleStorage newSimpleStorageContract = new SimpleStorage(); //simplestorage is named now as newsimplestoragecontract and we equal that to new so that a new one is generated every time we use the function
+    listofsimpleStoragecontracts.push(newSimpleStorageContract); //like before, we push in the list, which was the named array, the newsimplestoragecontract in parantheses
+
+}
+function sfstore(uint256 _simpleStorageIndex, uint256 _newSimpleStorageNumber) public {//we created a function with 2 variables, index is the sequence number of the contract, and the number is the number we assign to it
+    //we need two things, an address and an ABI (application binary interface)
+   listofsimpleStoragecontracts[_simpleStorageIndex].store(_newSimpleStorageNumber); //this command stores assigns a number we want to assign to each contract to the contract index number. what it means is that in the list array
+   //...we are assigning a number to each index number so first go the [] then go the ()
+}
+function sfget(uint256 _simpleStorageIndex) public view returns (uint256){//in this function we give the index number to the machine and it returns us the number we had assigned to the corresponding contract
+    return listofsimpleStoragecontracts[_simpleStorageIndex].retrieve(); //the command .retrieve allows us to retrieve whatever was assigned in the first part which was the array list
+}
+    
+}
