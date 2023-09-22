@@ -1,0 +1,49 @@
+// SPDX-License-Identifier: MIT
+pragma solidity 0.8.18; // pragma solidity ^0.8.18; // stating my version. the ^ means that i can work with anything greater or equal to the version stated
+// control + S does 'save and compile'
+
+contract SimpleStorage { 
+    // Basic Types: boolean, uint, int, address, bytes
+    // bool HasFavoriteNumber = true;
+    // int256 FavoriteNumber = -88;
+    // string FavoriteNumberintext = "88, meaning eighty-eight";
+    // uint256 FavoriteNumberinUINT = 88;
+    // address MyAddress = 0x0D2332bbF2d12b39966e7fa7764F81Db9fae558B;
+    // bytes32 FavoriteBytes = "doggo"; // this would like something like 0xdf67asds 
+    // let's begin anew
+    uint256  MyFavoriteNumber; //when a number is not stated with "=" then uint256's default is 0, bool's is false etc. i added the keyword "public" after the uint256, that is the visibility, before it was internal and it was not publicly visible.
+    // uint256[]  ListofFavorites; // the [] declare that this uint256 will be an array, a list. but how do we know which is whose? we create a struct. 
+    struct Person{
+        uint256 FavoriteNumber;
+        string Name;
+        string Sex;
+        string SelfDeclaration;
+        
+    }
+
+    Person[] public ListofPeople;
+    mapping (string => uint256) public  NameToFavoriteNumber; // this mapping will, alongside the function nametofavoritenumber, assign the names to the numbers and will allow me to search the number by name
+
+
+    // Person public Lucas = Person ({FavoriteNumber : 7, Name : "Lucas", Sex : "male", SelfDeclaration : "Eimai antraklas"}); // strings have to go inside ""s, and : has to be used isntead of a =
+    // Person public Chris = Person ({FavoriteNumber :10, Name : "Chris", Sex:"female", SelfDeclaration : "Eimai Panpathetic kai paxoumios"});
+    
+    function store(uint256 FavoriteNumber) public {
+        MyFavoriteNumber = FavoriteNumber;
+
+    }
+    function retrieve () public view returns (uint256) {
+        return MyFavoriteNumber;
+    }
+    function show() public view returns (uint256) {
+                        return MyFavoriteNumber*MyFavoriteNumber;
+    }
+    function Add_Person(string memory Name, uint256 FavoriteNumber, string memory Sex, string memory SelfDeclaration) public {// calldata are temporary variables that cannot be modified, that is why we used "memory". they are temporary variables that can
+             ListofPeople.push (Person(FavoriteNumber, Name, Sex, SelfDeclaration ) ); //the storage keyword on the other hand is something permanent and exists outside of funstions, and can be changed.
+             NameToFavoriteNumber[Name] = FavoriteNumber;
+    }
+   
+    
+}
+
+
