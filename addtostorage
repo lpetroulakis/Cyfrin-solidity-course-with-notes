@@ -1,0 +1,16 @@
+// SPDX-License-Identifier: MIT
+
+pragma solidity ^0.8.18;
+
+import {SimpleStorage} from "./simplestorage1.sol";
+
+contract AddFiveStorage is SimpleStorage {       // "is" makes the new contract inherit all the functionality of the other one
+       
+        function SayHello () public pure returns (string memory){// it is pure instead of view because it reads nothing from storage
+        return "Hello";}
+
+        function store(uint256 NewNumber) public override { //we want to change the contract's store function.to be able to do so, we need to use the override command here, and the virtual command in the store function we wanted changed
+            myFavoriteNumber = NewNumber+5;
+        }
+
+}
