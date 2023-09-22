@@ -1,0 +1,14 @@
+//SPDX-License-Identifier: MIT
+pragma solidity 0.8.18;
+
+contract fallbackexample{
+        uint256 public result;
+
+        receive () external payable { //this does not work when we try to send data
+            result = 1;
+        }
+        fallback () external payable {// this works even when sending data
+            result = 2;
+        }
+
+}
