@@ -1,0 +1,39 @@
+// I'm a comment!
+// SPDX-License-Identifier: MIT
+
+pragma solidity 0.8.18;
+
+// pragma solidity ^0.8.0;
+// pragma solidity >=0.8.0 <0.9.0;
+
+contract SimpleStorage {
+    uint256 myFavoriteNumber;
+
+    struct Person {
+        uint256 favoriteNumber;
+        string name;
+    }
+    // uint256[] public anArray;
+    Person[] public listOfPeople;
+
+    mapping(string => uint256) public nameToFavoriteNumber; //this is how we'll ask the name and get the favorite number
+
+    function store(uint256 _favoriteNumber) public virtual {
+        myFavoriteNumber = _favoriteNumber;
+    }
+
+    function retrieve() public view returns (uint256) {
+        return myFavoriteNumber;
+    }
+
+    function addPerson(string memory _name, uint256 _favoriteNumber) public {
+        listOfPeople.push(Person(_favoriteNumber, _name)); //in the array called listofpeople we push persons in ()s because they are their variables
+        nameToFavoriteNumber[_name] = _favoriteNumber; // in the mapping nametofavoriteplayer we created, we matched string with uint, so we use [] here to give the string and it returns us the correspoding uint
+    }
+}
+
+contract SimpleStorage2 {}
+
+contract SimpleStorage3 {}
+
+contract SimpleStorage4 {}
